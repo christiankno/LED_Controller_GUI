@@ -1,9 +1,14 @@
 # import system libraries
 import time
+import os
 from functions import send, sendW, sendMore
+if not os.path.isfile('./config.py'):
+    with open('./config.py', 'w+') as f:
+        f.write("ADAFRUIT_IO_KEY=''\nADAFRUIT_IO_USERNAME=''")
+    print('pleade fill in the missing configuration data')
 
+from config import *
 from Adafruit_IO import Client, Feed, RequestError
-from statefile import ADAFRUIT_IO_KEY, ADAFRUIT_IO_USERNAME
 
 # Create an instance of the REST client.
 aio = Client(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)

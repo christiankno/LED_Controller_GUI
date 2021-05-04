@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="config.py" />
     <Compile Include="LED_HSV_Wheel.pyw" />
     <Compile Include="LED_HSV_Color_Picker.pyw" />
     <Compile Include="LED_RGB_Color_Picker.pyw" />
