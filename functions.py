@@ -10,80 +10,84 @@ PCA9685=1
 limit=4095 if PCA9685 else 1024
 
 
-if state is None: state=(255,255,0)
-state=list(state)
+state= [255,255,0] if state is None else list(state)
 hsv=list(colorsys.rgb_to_hsv(*state))
 
 root = tk.Tk()
 
-def setR(R):
-    state[0]=int(R)
-    send(state)
-    saveState(state)
+def on_mousewheel(event):
+    d=event.delta/120*(limit>>7)
+    if event.widget.widgetName=='scale': event.widget.set(event.widget.get()+d)
 
-def setG(G):
-    state[1]=int(G)
-    send(state)
-    saveState(state)
+def setRGB(rgb, brightness):
+    rgbb=[int(i/limit*brightness) for i in rgb]
+    send(rgbb)
+    saveState(rgbb)
 
-def setB(B):
-    state[2]=int(B)
-    send(state)
-    saveState(state)
-
-def setH(H):
-    global state
-    hsv=list(colorsys.rgb_to_hsv(*state))
-    hsv[0]=int(H)/1000
-    state=list(colorsys.hsv_to_rgb(*hsv))
-    send(state)
-    saveState(state)
-
-def setS(S):
-    global state
-    hsv=list(colorsys.rgb_to_hsv(*state))
-    hsv[1]=int(S)/1000
-    state=list(colorsys.hsv_to_rgb(*hsv))
-    send(state)
-    saveState(state)
+def setHSV(hsv):
+    hsv=[hsv[0]/limit, hsv[1]/limit, hsv[2]]
+    rgb=[int(i) for i in list(colorsys.hsv_to_rgb(*hsv))]
+    send(rgb)
+    saveState(rgb)
     
-def setV(V):
-    global state
-    hsv=list(colorsys.rgb_to_hsv(*state))
-    hsv[2]=int(V)
-    state=list(colorsys.hsv_to_rgb(*hsv))
-    send(state)
-    saveState(state)
-    
-def setBright(bright):
-    global state
-    bright=int(bright)
-    s=[0,0,0]
-    #for i in range(len(state)): 
-    #    s[i]=int(state[i]*int(bright)/1024)
-    s=[int(i*bright/limit) for i in state]
-    send(s)
-
 def pickColor():
     global state
     try:
-        state = [int(s*limit/255) for s in list(askcolor( tuple( [int(s*255/limit) for s in state] ), root)[0]) ]
+        color = list(askcolor( tuple( [int(s*255/limit) for s in state] ), root)[0] )
+        state = [int(s*limit/255) for s in color ]
         send(state)
         saveState(state)
     except Exception as e:
         print('No Color Picked')
         print(e)
 
-
 def send(rgb):
     try:
-        requests.post('http://192.168.0.109/data/', data={'R': rgb[0], 'G': rgb[1], 'B': rgb[2]})
+        r=requests.post('http://192.168.0.109/data/', data={'R': rgb[0], 'G': rgb[1], 'B': rgb[2]})
+        data=handleResponse(r)
     except Exception as e:
         print('problem posting information')
         print(e)
     print(rgb)
     return
 
+def sendW(W):
+    try:
+        r=requests.post('http://192.168.0.109/data/', data={'W': W})
+        data=handleResponse(r)
+    except Exception as e:
+        print('problem posting information')
+        print(e)
+    return
+
+def sendMore(toggle=None, enable=None):
+    _={}
+    if toggle is not None: _['toggle']= toggle
+    if enable is not None: _['enable']= enable
+    try:
+        r=requests.post('http://192.168.0.109/data/', data=_)
+        data=handleResponse(r)
+    except Exception as e:
+        print('problem posting information')
+        print(e)
+    return
+
+def getData():
+    try:
+        r=requests.post('http://192.168.0.109/data/')
+        data=handleResponse(r)
+    except Exception as e:
+        print('problem posting information')
+        print(e)
+        data = cnf.state.append(0)
+    return data
+
+
 def saveState(rgb):
     with open('statefile.py', 'w') as f: f.write('state=['+str(rgb[0]) +","+str(rgb[1]) +","+str(rgb[2]) +"]")
     state=rgb
+
+def handleResponse(r):
+    data=[int(float(i)) for i in r.text[6:].split(', ')]
+    print(data)
+    return data

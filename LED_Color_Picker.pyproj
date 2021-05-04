@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>cb8ef663-d5c2-4e12-ad9b-ff280a00c3e1</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>LED_RGB_Color_Picker.pyw</StartupFile>
+    <StartupFile>LED_MQTT_Server_Adafruit_IO.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -25,6 +25,12 @@
     <Compile Include="LED_HSV_Color_Picker.pyw" />
     <Compile Include="LED_RGB_Color_Picker.pyw" />
     <Compile Include="functions.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="module1.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LED_MQTT_Server_Adafruit_IO.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="statefile.py">
