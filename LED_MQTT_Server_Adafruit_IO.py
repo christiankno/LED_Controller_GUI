@@ -24,7 +24,7 @@ Dependencies:
 """
 # import system libraries
 import time
-from functions import *
+from functions import send, sendW, sendMore
 
 
 ## import Adafruit Blinka
