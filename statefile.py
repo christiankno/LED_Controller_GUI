@@ -1,1 +1,3 @@
 state=[0,0,0]
+ADAFRUIT_IO_KEY=''
+ADAFRUIT_IO_USERNAME=''
