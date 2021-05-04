@@ -1,9 +1,11 @@
 import requests
 import statefile as cnf
-import tkinter as tk
-import tkinter.ttk as ttk
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+    from tkcolorpicker import askcolor
+except Exception as e: print(e)
 import colorsys
-from tkcolorpicker import askcolor
 state=cnf.state
 PCA9685=1
 
