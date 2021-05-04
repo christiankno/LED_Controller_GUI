@@ -26,30 +26,8 @@ Dependencies:
 import time
 from functions import send, sendW, sendMore
 
-
-## import Adafruit Blinka
-#from board import SCL, SDA
-#from busio import I2C
-
-## import the PCA9685 module.
-#from adafruit_pca9685 import PCA9685
-
-# import Adafruit IO REST client
 from Adafruit_IO import Client, Feed, RequestError
-
-## PWM Pins
-#RED_PIN = 6
-#GREEN_PIN = 5
-#BLUE_PIN = 4
-
-# Set to your Adafruit IO key.
-# Remember, your key is a secret,
-# so make sure not to publish it when you publish this code!
-ADAFRUIT_IO_KEY = 'aio_iBFX85F9RKvc7aLwZKRyn7rDu4sU'
-
-# Set to your Adafruit IO username.
-# (go to https://accounts.adafruit.com to find your username)
-ADAFRUIT_IO_USERNAME = 'MonLighting'
+from statefile import ADAFRUIT_IO_KEY, ADAFRUIT_IO_USERNAME
 
 # Create an instance of the REST client.
 aio = Client(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
