@@ -15,7 +15,11 @@ limit=4095 if PCA9685 else 1024
 state= [255,255,0] if state is None else list(state)
 hsv=list(colorsys.rgb_to_hsv(*state))
 
-root = tk.Tk()
+try:
+    root = tk.Tk()
+except Exception as e:
+    print(e)
+
 
 def on_mousewheel(event):
     d=event.delta/120*(limit>>7)
