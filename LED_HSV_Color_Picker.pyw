@@ -15,9 +15,9 @@ h.set(hsv[0]*limit)
 s.set(hsv[1]*limit)
 v.set(hsv[2])
 
-h.configure(command=lambda i: setHSV( [int(i), int(s.get()), int(v.get()) ] ))
-s.configure(command=lambda i: setHSV( [int(h.get()), int(i), int(v.get()) ] ))
-v.configure(command=lambda i: setHSV( [int(h.get()), int(s.get()), int(i) ] ))
+h.configure(command=lambda i: sendMore( rgb=hsv2rgb( [int(i), int(s.get()), int(v.get()) ] ) ) )
+s.configure(command=lambda i: sendMore( rgb=hsv2rgb( [int(h.get()), int(i), int(v.get()) ] ) ) )
+v.configure(command=lambda i: sendMore( rgb=hsv2rgb( [int(h.get()), int(s.get()), int(i) ] ) ) )
 
 h.pack()
 s.pack()

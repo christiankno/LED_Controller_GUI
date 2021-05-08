@@ -28,11 +28,18 @@ else:
 w.set(data[3])
 
 
-w.configure(command=lambda i: sendW( int(i) ))
-r.configure(command=lambda i: setRGB( [int(i), int(g.get()), int(b.get()) ], int(bright.get()) ))
-g.configure(command=lambda i: setRGB( [int(r.get()), int(i), int(b.get()) ], int(bright.get()) ))
-b.configure(command=lambda i: setRGB( [int(r.get()), int(g.get()), int(i) ], int(bright.get()) ))
-bright.configure(command=lambda i: setRGB( [int(r.get()), int(g.get()), int(b.get()) ], int(i) ))
+w.configure(command=lambda i: sendMore( w=int(i) ))
+r.configure(command=lambda i: sendMore(rgb=multBrightness( [int(i), int(g.get()), int(b.get()) ], int(bright.get()) )) )
+g.configure(command=lambda i: sendMore(rgb=multBrightness( [int(r.get()), int(i), int(b.get()) ], int(bright.get()) )) )
+b.configure(command=lambda i: sendMore(rgb=multBrightness( [int(r.get()), int(g.get()), int(i) ], int(bright.get()) )) )
+bright.configure(command=lambda i: sendMore(rgb=multBrightness( [int(r.get()), int(g.get()), int(b.get()) ], int(i) )) )
+
+
+#w.configure(command=lambda i: sendW( int(i) ))
+#r.configure(command=lambda i: multBrightness( [int(i), int(g.get()), int(b.get()) ], int(bright.get()) ))
+#g.configure(command=lambda i: multBrightness( [int(r.get()), int(i), int(b.get()) ], int(bright.get()) ))
+#b.configure(command=lambda i: multBrightness( [int(r.get()), int(g.get()), int(i) ], int(bright.get()) ))
+#bright.configure(command=lambda i: multBrightness( [int(r.get()), int(g.get()), int(b.get()) ], int(i) ))
 
 w.pack()
 r.pack()

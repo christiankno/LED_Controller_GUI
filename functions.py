@@ -25,14 +25,16 @@ def on_mousewheel(event):
     d=event.delta/120*(limit>>7)
     if event.widget.widgetName=='scale': event.widget.set(event.widget.get()+d)
 
-def setRGB(rgb, brightness):
+def multBrightness(rgb, brightness):
     rgbb=[int(i/limit*brightness) for i in rgb]
-    send(rgbb)
-    saveState(rgbb)
+    #send(rgbb)
+    #saveState(rgbb)
+    return rgb
 
-def setHSV(hsv):
+def hsv2rgb(hsv):
     hsv=[hsv[0]/limit, hsv[1]/limit, hsv[2]]
     rgb=[int(i) for i in list(colorsys.hsv_to_rgb(*hsv))]
+    return(rgb)
     send(rgb)
     saveState(rgb)
     
@@ -66,12 +68,19 @@ def sendW(W):
         print(e)
     return
 
-def sendMore(toggle=None, enable=None):
-    _={}
-    if toggle is not None: _['toggle']= toggle
-    if enable is not None: _['enable']= enable
+def sendMore(rgb=None, w=None, toggle=None, enable=None):
+    data={}
+    if rgb is not None: 
+        data['R']=rgb[0]
+        data['G']=rgb[1]
+        data['B']=rgb[2]
+    if w is not None: data['W']=w
+
+    if enable is not None: data['enable']= enable
+    elif toggle is not None: data['toggle']= toggle
+
     try:
-        r=requests.post('http://192.168.0.109/data/', data=_)
+        r=requests.post('http://192.168.0.109/data/', data=data)
         data=handleResponse(r)
     except Exception as e:
         print('problem posting information')

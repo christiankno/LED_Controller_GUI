@@ -47,10 +47,12 @@ while True:
         toggle_data = aio.receive(toggle.key)
         state_data = aio.receive(state.key)
         colorname_data = aio.receive(colorname.key)
+        data={}
 
         if colorname_data.value != '0':
             color=colorname_data.value.lower()
             if color in color_dict.keys():
+                print('Turning {}'.format(color))
                 color_values=color_dict[color]
             else: print('color not recognized')
             
@@ -58,8 +60,8 @@ while True:
             elif color_values=='off': sendMore(enable=0)
             else:
                 wrgb=[int(i) for i in color_values.split(',')]
-                send(wrgb[1:])
-                sendW(wrgb[0])
+                data['rgb']=wrgb[1:]
+                data['w']=wrgb[0]
 
             try:
                 aio.send(colorname.key, '0')
@@ -67,20 +69,23 @@ while True:
                 print('error sending colorname value')
                 print(e)
 
-        if toggle_data != prev_toggle_data:
-            print(toggle_data.value)
-            if toggle_data.value=='ON': sendMore(enable=1)
-            else: sendMore(enable=0)
+            sendMore(**data)
 
-        if state_data != prev_state_data and state_data.value != '0':
-            print(state_data.value)
-            wrgb=[int(i) for i in state_data.value.split(',')]
-            send(wrgb[1:])
-            sendW(wrgb[0])
-            try:
-                aio.send(state.key, '0')
-            except Exception as e:
-                print(e)
+        #if toggle_data != prev_toggle_data:
+        #    print(toggle_data.value)
+        #    if toggle_data.value=='ON': data['enable']=1
+        #    else: data['enable']=0
+
+
+        #if state_data != prev_state_data and state_data.value != '0':
+        #    print(state_data.value)
+        #    wrgb=[int(i) for i in state_data.value.split(',')]
+        #    send(wrgb[1:])
+        #    sendW(wrgb[0])
+        #    try:
+        #        aio.send(state.key, '0')
+        #    except Exception as e:
+        #        print(e)
 
         prev_state_data = state_data
         prev_toggle_data = toggle_data
