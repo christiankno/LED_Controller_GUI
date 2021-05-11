@@ -1,5 +1,7 @@
 import requests
 import statefile as cnf
+import time
+
 try:
     import tkinter as tk
     import tkinter.ttk as ttk
@@ -29,7 +31,7 @@ def multBrightness(rgb, brightness):
     rgbb=[int(i/limit*brightness) for i in rgb]
     #send(rgbb)
     #saveState(rgbb)
-    return rgb
+    return rgbb
 
 def hsv2rgb(hsv):
     hsv=[hsv[0]/limit, hsv[1]/limit, hsv[2]]
@@ -106,3 +108,26 @@ def handleResponse(r):
     data=[int(float(i)) for i in r.text[6:].split(', ')]
     print(data)
     return data
+
+
+def setLED(rgb):
+    try:
+        r=requests.post('http://192.168.0.109/data/', data={'W':rgb[0], 'R':rgb[1], 'G':rgb[2], 'B':rgb[3]})
+        r=handleResponse(r)
+        print(r)
+    except Exception as e:
+        print(e)
+    return
+
+def dimTo(next, t=1):
+    r = requests.post('http://192.168.0.109/data/')
+    prev=handleResponse(r)
+    steps=t*50
+
+
+    diff=[next[i]-prev[i] for i in range(len(next))]
+
+    for i in range(steps+1):
+        wrgb=[int(prev[j]+diff[j]/steps*i) for j in range(len(prev))]
+        setLED(wrgb)
+        time.sleep(0.02)

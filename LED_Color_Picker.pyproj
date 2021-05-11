@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>cb8ef663-d5c2-4e12-ad9b-ff280a00c3e1</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>LED_MQTT_Server_Adafruit_IO.py</StartupFile>
+    <StartupFile>Morning_lights_on.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Morning_lights_on.py" />
     <Compile Include="config.py" />
     <Compile Include="LED_HSV_Wheel.pyw" />
     <Compile Include="LED_HSV_Color_Picker.pyw" />
