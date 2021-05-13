@@ -26,7 +26,7 @@ except Exception as e:
     print(e)
 
 
-def on_mousewheel(event: tk.Event) -> None:
+def on_mousewheel(event) -> None:
     d=event.delta/120*(limit>>7)
     if event.widget.widgetName=='scale': event.widget.set(event.widget.get()+d)
     print(type(event))
