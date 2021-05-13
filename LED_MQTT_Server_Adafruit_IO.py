@@ -1,14 +1,16 @@
 # import system libraries
 import time
 import os
-from functions import send, sendW, sendMore
+from Adafruit_IO import Client, Feed, RequestError
+from functions import sendMore
+
+
 if not os.path.isfile('./config.py'):
     with open('./config.py', 'w+') as f:
         f.write("ADAFRUIT_IO_KEY=''\nADAFRUIT_IO_USERNAME=''")
     print('pleade fill in the missing configuration data')
 
 from config import *
-from Adafruit_IO import Client, Feed, RequestError
 
 # Create an instance of the REST client.
 aio = Client(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
@@ -56,8 +58,8 @@ while True:
                 color_values=color_dict[color]
             else: print('color not recognized')
             
-            if color_values=='on': sendMore(enable=1)
-            elif color_values=='off': sendMore(enable=0)
+            if color_values=='on': data['enable']=1
+            elif color_values=='off': data['enable']=0
             else:
                 wrgb=[int(i) for i in color_values.split(',')]
                 data['rgb']=wrgb[1:]
@@ -71,28 +73,13 @@ while True:
 
             sendMore(**data)
 
-        #if toggle_data != prev_toggle_data:
-        #    print(toggle_data.value)
-        #    if toggle_data.value=='ON': data['enable']=1
-        #    else: data['enable']=0
-
-
-        #if state_data != prev_state_data and state_data.value != '0':
-        #    print(state_data.value)
-        #    wrgb=[int(i) for i in state_data.value.split(',')]
-        #    send(wrgb[1:])
-        #    sendW(wrgb[0])
-        #    try:
-        #        aio.send(state.key, '0')
-        #    except Exception as e:
-        #        print(e)
-
         prev_state_data = state_data
         prev_toggle_data = toggle_data
         time.sleep(0.5)
 
     except Exception as e:
         print(e)
+
 
         ## print rgb values and hex value
         #print('Received Color: ')

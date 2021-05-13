@@ -1,6 +1,9 @@
 import requests
 import statefile as cnf
 import time
+import typing
+from collections.abc import Sequence
+
 
 try:
     import tkinter as tk
@@ -23,55 +26,58 @@ except Exception as e:
     print(e)
 
 
-def on_mousewheel(event):
+def on_mousewheel(event: tk.Event) -> None:
     d=event.delta/120*(limit>>7)
     if event.widget.widgetName=='scale': event.widget.set(event.widget.get()+d)
+    print(type(event))
+    return
 
-def multBrightness(rgb, brightness):
+def multBrightness(rgb: list, brightness: int):
     rgbb=[int(i/limit*brightness) for i in rgb]
-    #send(rgbb)
-    #saveState(rgbb)
     return rgbb
 
-def hsv2rgb(hsv):
+def hsv2rgb(hsv: list) -> list:
     hsv=[hsv[0]/limit, hsv[1]/limit, hsv[2]]
     rgb=[int(i) for i in list(colorsys.hsv_to_rgb(*hsv))]
     return(rgb)
-    send(rgb)
-    saveState(rgb)
     
-def pickColor():
+def pickColor() -> None:
     global state
     try:
-        color = list(askcolor( tuple( [int(s*255/limit) for s in state] ), root)[0] )
-        state = [int(s*limit/255) for s in color ]
-        send(state)
-        saveState(state)
+        rgb=getData()[1:]
+        color = list(askcolor( tuple( [int(s*255/limit) for s in rgb] ), root)[0] )
+        rgb = [int(s*limit/255) for s in color ]
+        sendMore(rgb=rgb)
+        saveState(rgb)
     except Exception as e:
         print('No Color Picked')
         print(e)
 
-def send(rgb):
-    try:
-        r=requests.post('http://192.168.0.109/data/', data={'R': rgb[0], 'G': rgb[1], 'B': rgb[2]})
-        data=handleResponse(r)
-    except Exception as e:
-        print('problem posting information')
-        print(e)
-    print(rgb)
-    return
+#def send(rgb: list) -> None:
+#    try:
+#        r=requests.post('http://192.168.0.109/data/', data={'R': rgb[0], 'G': rgb[1], 'B': rgb[2]})
+#        data=handleResponse(r)
+#    except Exception as e:
+#        print('problem posting information')
+#        print(e)
+#    print(rgb)
+#    return
 
-def sendW(W):
-    try:
-        r=requests.post('http://192.168.0.109/data/', data={'W': W})
-        data=handleResponse(r)
-    except Exception as e:
-        print('problem posting information')
-        print(e)
-    return
+#def sendW(W: int) -> None:
+#    try:
+#        r=requests.post('http://192.168.0.109/data/', data={'W': W})
+#        data=handleResponse(r)
+#    except Exception as e:
+#        print('problem posting information')
+#        print(e)
+#    return
 
-def sendMore(rgb=None, w=None, toggle=None, enable=None):
+def sendMore(rgb: list = None, w: int = None, toggle: bool = None, enable: bool = None, wrgb: list = None) -> None:
     data={}
+    if wrgb is not None:
+        w=wrgb[0]
+        rgb=wrgb[1:]
+
     if rgb is not None: 
         data['R']=rgb[0]
         data['G']=rgb[1]
@@ -87,9 +93,18 @@ def sendMore(rgb=None, w=None, toggle=None, enable=None):
     except Exception as e:
         print('problem posting information')
         print(e)
-    return
+    return data
 
-def getData():
+#def setLED(rgb: list) -> None:
+#    try:
+#        r=requests.post('http://192.168.0.109/data/', data={'W':rgb[0], 'R':rgb[1], 'G':rgb[2], 'B':rgb[3]})
+#        r=handleResponse(r)
+#        print(r)
+#    except Exception as e:
+#        print(e)
+#    return
+
+def getData() -> list:
     try:
         r=requests.post('http://192.168.0.109/data/')
         data=handleResponse(r)
@@ -100,34 +115,26 @@ def getData():
     return data
 
 
-def saveState(rgb):
+def saveState(rgb: list) -> None:
     with open('statefile.py', 'w') as f: f.write('state=['+str(rgb[0]) +","+str(rgb[1]) +","+str(rgb[2]) +"]")
     state=rgb
+    return
 
-def handleResponse(r):
+def handleResponse(r) -> list:
     data=[int(float(i)) for i in r.text[6:].split(', ')]
     print(data)
     return data
 
 
-def setLED(rgb):
-    try:
-        r=requests.post('http://192.168.0.109/data/', data={'W':rgb[0], 'R':rgb[1], 'G':rgb[2], 'B':rgb[3]})
-        r=handleResponse(r)
-        print(r)
-    except Exception as e:
-        print(e)
-    return
 
-def dimTo(next, t=1):
-    r = requests.post('http://192.168.0.109/data/')
-    prev=handleResponse(r)
+def dimTo(next: list, t: int = 1) -> None:
     steps=t*50
-
+    prev=getData()
 
     diff=[next[i]-prev[i] for i in range(len(next))]
 
     for i in range(steps+1):
         wrgb=[int(prev[j]+diff[j]/steps*i) for j in range(len(prev))]
-        setLED(wrgb)
+        sendMore(wrgb=wrgb)
         time.sleep(0.02)
+    return

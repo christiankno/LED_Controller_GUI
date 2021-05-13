@@ -15,17 +15,18 @@ butt = tk.Button(root, command=pickColor, text='Pick')
 
 data=getData()
 
-if max(data[0:3])>0:
-    r.set(data[0]*limit/max(data[0:3]))
-    g.set(data[1]*limit/max(data[0:3]))
-    b.set(data[2]*limit/max(data[0:3]))
-    bright.set(max(data[0:3]))
+w.set(data[0])
+
+if max(data[1:])>0:
+    r.set(data[1]*limit/max(data[1:]))
+    g.set(data[2]*limit/max(data[1:]))
+    b.set(data[3]*limit/max(data[1:]))
+    bright.set(max(data[1:]))
 else:
-    r.set(data[0])
-    g.set(data[1])
-    b.set(data[2])
+    r.set(data[1])
+    g.set(data[2])
+    b.set(data[3])
     bright.set(limit)
-w.set(data[3])
 
 
 w.configure(command=lambda i: sendMore( w=int(i) ))
@@ -33,13 +34,6 @@ r.configure(command=lambda i: sendMore(rgb=multBrightness( [int(i), int(g.get())
 g.configure(command=lambda i: sendMore(rgb=multBrightness( [int(r.get()), int(i), int(b.get()) ], int(bright.get()) )) )
 b.configure(command=lambda i: sendMore(rgb=multBrightness( [int(r.get()), int(g.get()), int(i) ], int(bright.get()) )) )
 bright.configure(command=lambda i: sendMore(rgb=multBrightness( [int(r.get()), int(g.get()), int(b.get()) ], int(i) )) )
-
-
-#w.configure(command=lambda i: sendW( int(i) ))
-#r.configure(command=lambda i: multBrightness( [int(i), int(g.get()), int(b.get()) ], int(bright.get()) ))
-#g.configure(command=lambda i: multBrightness( [int(r.get()), int(i), int(b.get()) ], int(bright.get()) ))
-#b.configure(command=lambda i: multBrightness( [int(r.get()), int(g.get()), int(i) ], int(bright.get()) ))
-#bright.configure(command=lambda i: multBrightness( [int(r.get()), int(g.get()), int(b.get()) ], int(i) ))
 
 w.pack()
 r.pack()
