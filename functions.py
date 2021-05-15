@@ -1,6 +1,7 @@
 import requests
 import statefile as cnf
 import time
+import traceback
 import typing
 from collections.abc import Sequence
 
@@ -82,6 +83,7 @@ def sendMore(rgb: list = None, w: int = None, toggle: bool = None, enable: bool 
     except Exception as e:
         print('problem posting information')
         print(e)
+        traceback.print_exc()
     return data
 
 def getData() -> list:
@@ -93,6 +95,7 @@ def getData() -> list:
     except Exception as e:
         print('problem posting information')
         print(e)
+        traceback.print_exc()
         data = cnf.state.append(0)
     return data
 

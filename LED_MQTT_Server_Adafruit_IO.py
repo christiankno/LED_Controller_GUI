@@ -1,6 +1,7 @@
 # import system libraries
 import time
 import os
+import traceback
 from Adafruit_IO import Client, Feed, RequestError
 from functions import sendMore
 
@@ -65,6 +66,8 @@ while True:
 
     except Exception as e:
         print(e)
+        traceback.print_exc()
+
 
 
         ## print rgb values and hex value
