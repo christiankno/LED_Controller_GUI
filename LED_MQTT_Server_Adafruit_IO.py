@@ -4,9 +4,10 @@ import os
 from Adafruit_IO import Client, Feed, RequestError
 from functions import sendMore
 
+source=os.path.dirname(os.path.abspath(__file__))
 
-if not os.path.isfile('./config.py'):
-    with open('./config.py', 'w+') as f:
+if not os.path.isfile(os.path.join(source,'config.py')):
+    with open(os.path.join(source,'config.py'), 'w+') as f:
         f.write("ADAFRUIT_IO_KEY=''\nADAFRUIT_IO_USERNAME=''")
     print('pleade fill in the missing configuration data')
 
@@ -16,24 +17,16 @@ from config import *
 aio = Client(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
 
 try: 
-    toggle = aio.feeds('led-toggle')
-    state = aio.feeds('rgb-lights.state')
     colorname = aio.feeds('rgb-lights.colorname')
     aio.feeds()
 except RequestError as e:
     print(e)
-    feed = Feed(name='led-toggle')
-    toggle = aio.create_feed(feed)
-    feed = Feed(name='rgb-lights.state')
-    state = aio.create_feed(feed)
-
-toggle_data=None
-prev_toggle_data=None
-state_data=None
-prev_state_data=aio.receive(state.key)
+    feed = Feed(name='rgb-lights.colorname')
+    colorname = aio.create_feed(feed)
 
 color_dict={
     'fire': '0,4095,680,0',
+    'orange': '0,4095,680,0',
     'blue': '4095,0,0,4095',
     'white': '4095,0,0,0',
     'max':'4095,4095,4095,4095',
@@ -46,8 +39,6 @@ color_dict={
 
 while True:
     try:
-        toggle_data = aio.receive(toggle.key)
-        state_data = aio.receive(state.key)
         colorname_data = aio.receive(colorname.key)
         data={}
 
@@ -60,10 +51,7 @@ while True:
             
             if color_values=='on': data['enable']=1
             elif color_values=='off': data['enable']=0
-            else:
-                wrgb=[int(i) for i in color_values.split(',')]
-                data['rgb']=wrgb[1:]
-                data['w']=wrgb[0]
+            else: data['wrgb']=[int(i) for i in color_values.split(',')]
 
             try:
                 aio.send(colorname.key, '0')
@@ -73,8 +61,6 @@ while True:
 
             sendMore(**data)
 
-        prev_state_data = state_data
-        prev_toggle_data = toggle_data
         time.sleep(0.5)
 
     except Exception as e:
