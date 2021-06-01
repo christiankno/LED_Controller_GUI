@@ -34,6 +34,5 @@ while True:
         logging.info(str(rfdevice.rx_code) +
                      " [pulselength " + str(rfdevice.rx_pulselength) +
                      ", protocol " + str(rfdevice.rx_proto) + "]")
-        print("code sent: {}".format(str(rfdevice.rx_code)))
     time.sleep(0.01)
 rfdevice.cleanup()
