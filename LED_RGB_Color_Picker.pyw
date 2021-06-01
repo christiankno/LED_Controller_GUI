@@ -2,7 +2,7 @@
 import tkinter as tk
 from functions import *
 
-
+print("starting window...")
 #style = ttk.Style(root)
 #style.theme_use('clam')
 

@@ -1,0 +1,8 @@
+[Plugin]
+Name=LightControl
+Loader=python3
+Module=gnome_ext
+Author=Lu K.
+X-Builder-ABI=3.36
+X-Has-Resources=true
+

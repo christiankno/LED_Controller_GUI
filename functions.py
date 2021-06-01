@@ -59,7 +59,7 @@ def pickColor() -> None:
         print(e)
     return
 
-def sendMore(rgb: list = None, w: int = None, toggle: bool = None, enable: bool = None, wrgb: list = None) -> list:
+def sendMore(rgb: list = None, w: int = None, toggle: bool = None, enable: bool = None, wrgb: list = None, debug: bool = 0) -> list:
     '''This function sends the color/white values aswell as the toggle or enable flag to the LED controller. 
     The values for the LEDs can be passed separately as RGB and W or combined as WRGB.
     The set values are then received as a response and are then returned by the function'''
@@ -80,18 +80,20 @@ def sendMore(rgb: list = None, w: int = None, toggle: bool = None, enable: bool 
     try:
         r=requests.post('http://192.168.0.109/data/', data=data)
         data=handleResponse(r)
+        if debug: print(data)
     except Exception as e:
         print('problem posting information')
         print(e)
         traceback.print_exc()
     return data
 
-def getData() -> list:
+def getData(debug=0) -> list:
     '''This function retrieves the data from the LED controller by sending an empty request.
     The response contains the current values of the LEDs which is returned as a list'''
     try:
         r=requests.post('http://192.168.0.109/data/')
         data=handleResponse(r)
+        if debug: print(data)
     except Exception as e:
         print('problem posting information')
         print(e)
@@ -111,7 +113,6 @@ def handleResponse(r) -> list:
     '''This parses the text response from the LED controller server to form a list containing the LED values. 
     Carefull. This function and the server response need to match in order to handle the text succesfully'''
     data=[int(float(i)) for i in r.text[6:].split(', ')]
-    print(data)
     return data
 
 
