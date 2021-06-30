@@ -33,22 +33,34 @@ signal.signal(signal.SIGINT, exithandler)
 rfdevice = RFDevice(args.gpio)
 rfdevice.enable_rx()
 timestamp = None
+oldtime=time.time()
 logging.info("Listening for codes on GPIO " + str(args.gpio))
 #print('Listening')
 while True:
-    if rfdevice.rx_code_timestamp != timestamp:
-        timestamp = rfdevice.rx_code_timestamp
-        code=str(rfdevice.rx_code)
-        print(code)
-        if code[:2]==code[-2:]=='69':
-            num=int(code[2:-2])
-            print('{}: {}'.format(num,light_args[num]))
-            sendMore(**light_args[num])
-        logging.info(str(rfdevice.rx_code) +
-                     " [pulselength " + str(rfdevice.rx_pulselength) +
-                     ", protocol " + str(rfdevice.rx_proto) + "]")
-#        print(str(rfdevice.rx_code) +
-#                     " [pulselength " + str(rfdevice.rx_pulselength) +
-#                     ", protocol " + str(rfdevice.rx_proto) + "]")
-    time.sleep(0.05)
+    try:
+        if rfdevice.rx_code_timestamp != timestamp:
+            timestamp = rfdevice.rx_code_timestamp
+            code=str(rfdevice.rx_code)
+            #print(code)
+        
+            if code[:2]==code[-2:]=='69' and time.time()-oldtime>=0.5:
+             
+                num=int(code[2:-2])
+                print('{}: {}'.format(num,light_args[num]))
+                sendMore(**light_args[num])
+            logging.info(str(rfdevice.rx_code) +
+                         " [pulselength " + str(rfdevice.rx_pulselength) +
+                         ", protocol " + str(rfdevice.rx_proto) + "]")
+#            print(str(rfdevice.rx_code) +
+#                         " [pulselength " + str(rfdevice.rx_pulselength) +
+#                         ", protocol " + str(rfdevice.rx_proto) + "]")
+            oldtime=time.time()
+        time.sleep(0.05)
+    except Exception as e:
+        try: 
+            logging.info(e)
+        except Exception as e2: 
+            print(e2)
+            print(e)
 rfdevice.cleanup()
+
