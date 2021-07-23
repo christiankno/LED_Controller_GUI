@@ -1,0 +1,9 @@
+tkcolorpicker==2.1.3
+PyGObject==3.36.0
+numpy==1.20.3
+requests==2.22.0
+Adafruit_IO==2.5.0
+mss==6.1.0
+Pillow==8.2.0
+rpi_rf==0.9.7
+skimage==0.0
