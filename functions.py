@@ -59,7 +59,7 @@ def pickColor() -> None:
         print(e)
     return
 
-def sendMore(rgb: list = None, w: int = None, toggle: bool = None, enable: bool = None, wrgb: list = None, debug: bool = 0) -> list:
+def sendMore(rgb: list = None, w: int = None, toggle: bool = None, enable: bool = None, wrgb: list = None, debug: bool = 0, diff: bool = None) -> list:
     '''This function sends the color/white values aswell as the toggle or enable flag to the LED controller. 
     The values for the LEDs can be passed separately as RGB and W or combined as WRGB.
     The set values are then received as a response and are then returned by the function'''
@@ -67,14 +67,17 @@ def sendMore(rgb: list = None, w: int = None, toggle: bool = None, enable: bool 
     if wrgb is not None:
         w=wrgb[0]
         rgb=wrgb[1:]
+        
 
     if rgb is not None: 
         data['R']=rgb[0]
         data['G']=rgb[1]
         data['B']=rgb[2]
-    if w is not None: data['W']=w
+    if w is not None: 
+        data['W']=w
 
-    if enable is not None: data['enable']= enable
+    if diff is not None:     data['Diff']=diff
+    if enable is not None:   data['enable']= enable
     elif toggle is not None: data['toggle']= toggle
 
     try:

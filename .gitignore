@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 statefile.py
 config.py
+__pycache__/
 
 
 # User-specific files

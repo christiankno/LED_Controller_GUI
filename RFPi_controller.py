@@ -11,24 +11,15 @@ from rpi_rf import RFDevice
 rfdevice = None
 
 
-def exithandler(signal, frame):
-    rfdevice.cleanup()
-    sys.exit(0)
-
-
-
 light_args=[{'wrgb':[4095,2000,500,0]},
     {'toggle':1},
     {'wrgb':[0,4095,800,0]},
     {'wrgb':[0,156,30,0]},
     ]
 
-
-
 def exithandler(signal, frame):
     rfdevice.cleanup()
     sys.exit(0)
-
 
 logging.basicConfig(level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S',
                     format='%(asctime)-15s - [%(levelname)s] %(module)s: %(message)s', )
@@ -42,18 +33,6 @@ signal.signal(signal.SIGINT, exithandler)
 rfdevice = RFDevice(args.gpio)
 rfdevice.enable_rx()
 timestamp = None
-
-logging.info("Listening for codes on GPIO " + str(args.gpio))
-print('Listening')
-while True:
-    if rfdevice.rx_code_timestamp != timestamp:
-        timestamp = rfdevice.rx_code_timestamp
-        logging.info(str(rfdevice.rx_code) +
-                     " [pulselength " + str(rfdevice.rx_pulselength) +
-                     ", protocol " + str(rfdevice.rx_proto) + "]")
-        if str(rfdevice.rx_code)==66560: print("this is mine: 66560")
-    time.sleep(0.05)
-
 oldtime=time.time()
 logging.info("Listening for codes on GPIO " + str(args.gpio))
 #print('Listening')
@@ -83,6 +62,4 @@ while True:
         except Exception as e2: 
             print(e2)
             print(e)
-
 rfdevice.cleanup()
-
