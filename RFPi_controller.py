@@ -10,6 +10,21 @@ from rpi_rf import RFDevice
 
 rfdevice = None
 
+
+def exithandler(signal, frame):
+    rfdevice.cleanup()
+    sys.exit(0)
+
+
+
+light_args=[{'wrgb':[4095,2000,500,0]},
+    {'toggle':1},
+    {'wrgb':[0,4095,800,0]},
+    {'wrgb':[0,156,30,0]},
+    ]
+
+
+
 def exithandler(signal, frame):
     rfdevice.cleanup()
     sys.exit(0)
@@ -27,6 +42,7 @@ signal.signal(signal.SIGINT, exithandler)
 rfdevice = RFDevice(args.gpio)
 rfdevice.enable_rx()
 timestamp = None
+
 logging.info("Listening for codes on GPIO " + str(args.gpio))
 print('Listening')
 while True:
@@ -37,4 +53,36 @@ while True:
                      ", protocol " + str(rfdevice.rx_proto) + "]")
         if str(rfdevice.rx_code)==66560: print("this is mine: 66560")
     time.sleep(0.05)
+
+oldtime=time.time()
+logging.info("Listening for codes on GPIO " + str(args.gpio))
+#print('Listening')
+while True:
+    try:
+        if rfdevice.rx_code_timestamp != timestamp:
+            timestamp = rfdevice.rx_code_timestamp
+            code=str(rfdevice.rx_code)
+            #print(code)
+        
+            if code[:2]==code[-2:]=='69' and time.time()-oldtime>=0.5:
+             
+                num=int(code[2:-2])
+                print('{}: {}'.format(num,light_args[num]))
+                sendMore(**light_args[num])
+            logging.info(str(rfdevice.rx_code) +
+                         " [pulselength " + str(rfdevice.rx_pulselength) +
+                         ", protocol " + str(rfdevice.rx_proto) + "]")
+#            print(str(rfdevice.rx_code) +
+#                         " [pulselength " + str(rfdevice.rx_pulselength) +
+#                         ", protocol " + str(rfdevice.rx_proto) + "]")
+            oldtime=time.time()
+        time.sleep(0.05)
+    except Exception as e:
+        try: 
+            logging.info(e)
+        except Exception as e2: 
+            print(e2)
+            print(e)
+
 rfdevice.cleanup()
+
