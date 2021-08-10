@@ -76,7 +76,7 @@ if __name__ == '__main__':
     #r=r.text
     #print(f'response: {r}')
 
-    HOST= ''
+    HOST= 'localhost'
     PORT= 50008
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((HOST, PORT))
