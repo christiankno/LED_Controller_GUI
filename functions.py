@@ -5,6 +5,10 @@ import traceback
 import typing
 from collections.abc import Sequence
 
+ip_address=None
+from ip_address import ip_address
+if ip_address is None: ip_address="192.168.0.109"
+
 
 try:
     import tkinter as tk
@@ -81,7 +85,7 @@ def sendMore(rgb: list = None, w: int = None, toggle: bool = None, enable: bool 
     elif toggle is not None: data['toggle']= toggle
 
     try:
-        r=requests.post('http://192.168.0.109/data/', data=data)
+        r=requests.post(f'http://{ip_address}/data/', data=data)
         data=handleResponse(r)
         if debug: print(data)
     except Exception as e:
@@ -94,7 +98,7 @@ def getData(debug=0) -> list:
     '''This function retrieves the data from the LED controller by sending an empty request.
     The response contains the current values of the LEDs which is returned as a list'''
     try:
-        r=requests.post('http://192.168.0.109/data/')
+        r=requests.post(f'http://{ip_address}/data/')
         data=handleResponse(r)
         if debug: print(data)
     except Exception as e:

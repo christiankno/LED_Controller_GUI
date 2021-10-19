@@ -9,6 +9,11 @@ if t:print(f'time_Start: {time.time()-tic}')
 import socket
 import json
 
+ip_address=None
+from ip_address import ip_address
+if ip_address is None: ip_address="192.168.0.109"
+
+
 if t:print(f'time_Requests: {time.time()-tic}')
 import argparse
 if t:print(f'time_Argsparse: {time.time()-tic}')
@@ -47,7 +52,7 @@ if __name__ == '__main__':
 
     ## Not needed after updating MCU code
     if args.diff and not diff_en:
-       r=requests.post('http://192.168.0.109/data/', data={})
+       r=requests.post(f'http://{ip_address}/data/', data={})
        data=[int(float(i)) for i in r.text[6:].split(', ')]
        val['w']=data[0]
        val['r']=data[1]
